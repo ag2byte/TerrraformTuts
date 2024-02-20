@@ -43,9 +43,10 @@ variable "azure_resource_group_name" {
 ```js
 //in main.tf
 module "azure_resource_groups" {
-   source = "./modules/azure-instance"
+    source = "./modules/azure-instance"
 
-+  instance_type  = var.azure_resource_group_name
+    instance_type  = var.azure_resource_group_name
+}
 ```
 
 The value for `azure_resource_group_name` can be passed in CLI while applying.
@@ -66,3 +67,35 @@ For exammple, in the case defined above
 // in terraform.tfvars
 azure_resource_group_name = "AZ_RG_1";
 ```
+
+#### Using variables between strings
+
+You can use `${variable-name}` for interpolation.
+For example:
+
+```js
+//in main.tf
+module "azure_resource_groups" {
+    source = "./modules/azure-instance"
+
+    instance_type  = "AZURE_RESOURCE_${var.azure_resource_group_name}"
+}
+```
+
+##### Adding validators to variables
+
+Based on your case you can add validators to a variable as follows:
+
+```js
+variable "test_Variable"{
+    description = "Test variable"
+    type = int
+    default = 0
+    validation{
+        condition = var.test_Variable > 10
+        error_message = "The number should be less than or equal to 10"
+    } // this is just a dummy validation on test_Variable
+}
+```
+
+[More information on Variables](https://developer.hashicorp.com/terraform/tutorials/cli/variables#interpolate-variables-in-strings)
